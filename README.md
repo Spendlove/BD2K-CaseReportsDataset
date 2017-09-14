@@ -10,5 +10,5 @@ UCLA Heart BD2K Case Reports Dataset metadata extraction script
 ## Usage Instructions
 You should be able to download the following files from this GitHub page.
 * ExtractionScript.py 
-  *stuff
+** stuff
 ### File Explanations
