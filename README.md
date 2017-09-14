@@ -18,7 +18,7 @@ You should be able to download the following files from this GitHub page.
 * [**journal_dict.txt**](https://github.com/Spendlove/BD2K-CaseReportsDataset/blob/master/journal_dict.txt): This is necessary for *ExtractionScript.py*, and was created by *prep_journals.py*.  If you do not have this, once you activate the virtual environment you can run *prep_journals.py* to create this. 
 * [**nlmcatalog_result.xml²**](https://github.com/Spendlove/BD2K-CaseReportsDataset/blob/master/nlmcatalog_result.xml): This is necessary for *prep_journals.py*.  This file contains journal xml information retrieved from the NLM catalog(2).
 * [**prep_journals.py**](https://github.com/Spendlove/BD2K-CaseReportsDataset/blob/master/prep_journals.py): This was used to create *impact_dict.txt*, and *journal_dict.txt*, which *ExtractionScript.py* reads in as dictionaries. *impact_dict.txt* maps journal names to journal impact factors, and is taken directly from *ji_list.txt*, while *journal_dict.txt* maps journal name synonyms to the version of the journal name used in *impact_dict.txt*, and is taken from both *ji_list.txt* and *nlmcatalog_result.xml*. 
-* [**requirements.txt**](https://github.com/Spendlove/BD2K-CaseReportsDataset/blob/master/requirements.txt): Used to create the virtual environment using ____.
+* [**requirements.txt**](https://github.com/Spendlove/BD2K-CaseReportsDataset/blob/master/requirements.txt): Used to create the virtual environment using virtualenv.
 
 ### Input Data
 
