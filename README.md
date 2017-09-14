@@ -72,35 +72,26 @@ python ExtractionScript.py TEST/ testing.txt
 * **testing.txt**: Main output summary table.  Each line represents one CCR.  Summarizes the most important pieces of information from the dataset, including indicating which disease systems each CCR is related to.  In addition it also parses some of the data (like demographics) into a more analyzable form.  *Note: We may want to edit which pieces of information are contained here slightly.*
      * Not all the pieces of metadata are summarized here, but in my script I made a variable for each metadata item based on which column (either contained in context or indexed by MeSH) normally has the best version of that piece of metadata, and so it should be a relatively simple thing to add any piece of metadata you desire. 
      * Information about how data-parsing was accomplished can be found at the bottom of this document.
-o	AGES_testing.txt
-♣	Look at this to verify that the age and gender were extracted correctly from the demographics. Each line represents one CCR.
-o	CCR_NUMS_testing.txt
-♣	Gives a list of the CCR number, the PMID, and contributor initials for each CCR. 
-o	JOURNALS_MISSING_IMPACT_FACTOR_testing.txt
-♣	Gives a list of all the journal names the script didn’t recognize, and thus was unable to assign an updated impact factor.  
-o	RAW_IN_CONTEXT_testing.txt
-♣	Contains raw, unparsed information from the “Contained in Context” column. Each line represents one CCR.
-o	RAW_INDEX_BY_MESH_testing.txt
-♣	Contains raw, unparsed information form the “Indexed by MeSH” column. Each line represents one CCR.
-o	“SCORE_testing.txt” 
-♣	Score table.  Contains all the scores from the dataset.
-♣	Unlike the other output tables, this file has two lines per CCR, one for each of the two columns of scores
-♣	Note: You may want to edit this to get rid of the scores in the Identification section, since this information was often copied and pasted, and thus the scores are uninformative
-o	the demographic information may in some cases combines data from both columns.<fix—it should grab genders from contained in context and only from mesh  column if can’t>)
+* **AGES_testing.txt**: Look at this to verify that the age and gender were extracted correctly from the demographics.  Each line represents one CCR.
+* **CCR_NUMS_testing.txt**: Gives a list of the CCR number, the PMID, and contributor initials for each CCR. 
+* **JOURNALS_MISSING_IMPACT_FACTOR_testing.txt**: Gives a list of all the journal names the script didn’t recognize, and thus was unable to assign an updated impact factor.  
+* **RAW_IN_CONTEXT_testing.txt**: Contains raw, unparsed information from the “Contained in Context” column.  Each line represents one CCR.
+* **RAW_INDEX_BY_MESH_testing.txt**: Contains raw, unparsed information form the “Indexed by MeSH” column.  Each line represents one CCR.
+* **SCORE_testing.txt**: Score table.  Contains all the scores from the dataset.  Unlike the other output tables, this file has two lines per CCR, one for each of the two columns of scores *Note: You may want to edit this to get rid of the scores in the Identification section, since this information was often copied and pasted, and thus the scores are uninformative*
 
 ### Explanation of Terminal Output
--	The terminal output has three parts
-o	Selected Problems with Individual Files
-♣	The terminal will print out some of the most important errors it encounters when reading the data
-•	For example, if the PMID in a file name does not match the PMID given inside the file
-♣	All of the errors and warnings generated for each CCR (except for information about missing/duplicate case report numbers, see below) can be found by examining the “Errors” column of the main output file (“testing.txt” in this case).
-o	Impact Factor Problems
-♣	While there were too many problems of this sort to print them all out above, I print out summary information of the amount of errors of this sort we have.  
-♣	If you are interested in which specific CCRs had journals the script had problems with, see the Errors column in the output file as noted above.
-♣	In addition, the JOURNALS_MISSING_IMPACT_FACTOR file lists each unique journal that was not recognized. 
-o	Missing and Duplicate Case Report Numbers
-♣	My script keeps track of which case report numbers are used and prints out which are duplicated and which are missing (assuming you desire CCRs from 0001 to 1800).  Feel free to edit the code to look for a different CCR number range if needed.
-♣	Be careful, the “duplicates” may really be duplicates, but they may also simply be unique files that were accidentally given the same CCR number
+The terminal output has three parts
+
+1. Selected Problems with Individual Files:
+     * The terminal will print out some of the most important errors it encounters when reading the data (For example, if the PMID in a file name does not match the PMID given inside the file).
+     * All of the errors and warnings generated for each CCR (except for information about missing/duplicate case report numbers, see below) can be found by examining the “Errors” column of the main output file (“testing.txt” in this case).
+2. Impact Factor Problems:
+     * While there were too many problems of this sort to print them all out above, I print out summary information of the amount of errors of this sort we have.  
+     * If you are interested in which specific CCRs had journals the script had problems with, see the Errors column in the output file as noted above.
+     * In addition, the JOURNALS_MISSING_IMPACT_FACTOR file lists each unique journal that was not recognized. 
+3. Missing and Duplicate Case Report Numbers:
+     * My script keeps track of which case report numbers are used and prints out which are duplicated and which are missing (assuming you desire CCRs from 0001 to 1800).  Feel free to edit the code to look for a different CCR number range if needed.
+     * Be careful, the “duplicates” may really be duplicates, but they may also simply be unique files that were accidentally given the same CCR number
 
 ## Parsing Explanation
 
@@ -112,8 +103,8 @@ o	Missing and Duplicate Case Report Numbers
 3. <virtualenv source goes here>
  
 ## Acknowledgements
-* Thanks to the many collaborators on StackOverflow.  This was an invaluable resource in developing the scripts
-* Some other helpful resources:
+* Thanks to the many collaborators on [StackOverflow](https://stackoverflow.com).  This was an invaluable resource in developing the scripts.
+* Selection of other helpful resources:
      * GitHub README [template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
      * The [word2number](https://pypi.python.org/pypi/word2number/1.1) package
      * Pandas [documentation](https://pandas.pydata.org/pandas-docs/stable/)and [cheatsheet](https://s3.amazonaws.com/assets.datacamp.com/blog_assets/PandasPythonForDataScience.pdf)
