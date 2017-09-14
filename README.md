@@ -12,21 +12,13 @@ UCLA Heart BD2K Case Reports Dataset metadata extraction script
 ### File Explanations
 
 You should be able to download the following files from this GitHub page.
-* *ExtractionScript.py*: This is the main script you will be using. 
-* *impact_dict.txt*: This is necessary for ExtractionScript.py, and was created by prep_journals.py. If you do not have this, once you activate the virtual environment you can run prep_journals.py to create this.
-
--	ji_list.txt (1)
-o	This is necessary for “prep_journals.py,” and is a text file version of the 2016 Journal Data from InCites Journal Citation Reports.
-o	I have an updated version from John that I am going to end up using instead, especially because it has a source whereas the other doesn’t. 
--	journal_dict.txt 
-o	This is necessary for ExtractionScript.py, and was created by “prep_journals.py.” If you do not have this, once you activate the virtual environment you can run “prep_journals.py” to create this. 
--	nlmcatalog_result.xml (2)
-o	This is necessary for “prep_journals.py.” This file contains journal xml information retrieved from the NLM catalog(2).
--	prep_journals.py 
-This was used to create “impact_dict.txt”, and “journal_dict.txt,” which “ExtractionScript.py” reads in as dictionaries. “impact_dict.txt” maps journal names to journal impact factors, and is taken directly from “ji_list.txt,” while “journal_dict.txt” maps journal name synonyms to the version of the journal 
-o	name used in “impact_dict.txt,” and is taken from both “ji_list.txt” and “nlmcatalog_result.xml.” 
--	requirements.txt 
-o	Used to create the virtual environment using ____.
+* [*ExtractionScript.py*]: This is the main script you will be using. 
+* [*impact_dict.txt*]: This is necessary for ExtractionScript.py, and was created by *prep_journals.py*. If you do not have this, once you activate the virtual environment you can run *prep_journals.py* to create this.
+* [*ji_list.txt(1)*]: This is necessary for *prep_journals.py*, and is a text file version of the 2016 Journal Data from InCites Journal Citation Reports. I have an updated version from John that I am going to end up using instead, especially because it has a source whereas the other doesn’t. 
+* [*journal_dict.txt*]: This is necessary for *ExtractionScript.py*, and was created by *prep_journals.py*. If you do not have this, once you activate the virtual environment you can run *prep_journals.py* to create this. 
+* [*nlmcatalog_result.xml(2)*]: This is necessary for *prep_journals.py*. This file contains journal xml information retrieved from the NLM catalog(2).
+* [*prep_journals.py*]: This was used to create *impact_dict.txt*, and *journal_dict.txt*, which *ExtractionScript.py* reads in as dictionaries. *impact_dict.txt* maps journal names to journal impact factors, and is taken directly from *ji_list.txt*, while *journal_dict.txt* maps journal name synonyms to the version of the journal name used in *impact_dict.txt*, and is taken from both *ji_list.txt* and *nlmcatalog_result.xml*. 
+* [*requirements.txt*]: Used to create the virtual environment using ____.
 
 ### Input Data
 
@@ -38,7 +30,7 @@ Go through and move all the files into the main directory and then delete the em
 
 Note, there are still a few duplicates and problem files on the Google Drive. See terminal output when you read the script.  See also “Errors” column in main output file.
 
-### Set Up Virtual Environment
+### Setting Up Virtual Environment
 
 This script uses virtualenv(3) to create a virtual environment in which to run the script.  This ensures that the necessary python version and packages are installed.  The “requirements.txt” file will allow you to create your own copy of this environment in your own file system. Here I will give directions on how to create and use this virtual environment. For the sake of the example, we will call it “my_env,” but it doesn’t matter what you call it.
 
