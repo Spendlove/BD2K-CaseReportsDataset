@@ -62,7 +62,7 @@ for journal in root.iter('NCBICatalogRecord'):
 				syns.add(s)
 		journal_syns[title]=syns
 #print journal_syns
-with io.open('./ji_list.txt','r',encoding='utf-8') as impact_js:
+with io.open('./Journal_Impact_factor_2017.txt','r',encoding='utf-8') as impact_js:
         first=True
 	for line in impact_js:
 		if first:
