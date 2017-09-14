@@ -64,11 +64,11 @@ Run the following line:
 ```
 python ExtractionScript.py TEST/ testing.txt
 ```
-*Note: Make sure you include the extra “/” at the end of the file path where the Excel files are stored!!*
+*__Note: Make sure you include the extra “/” at the end of the file path where the Excel files are stored!!__*
 
 ### Explanation of Output Files
 
-* **testing.txt**: Main output summary table.  Each line represents one CCR.  Summarizes the most important pieces of information from the dataset, including indicating which disease systems each CCR is related to.  In addition it also parses some of the data (like demographics) into a more analyzable form.  *Note: We may want to edit which pieces of information are contained here slightly.*
+* **testing.txt**: Main output summary table.  Each line represents one CCR.  Summarizes the most important pieces of information from the dataset, including indicating which disease systems each CCR is related to.  In addition it also parses some of the data (like demographics) into a more analyzable form.  *__Note: We may want to edit which pieces of information are contained here slightly.__*
      * Not all the pieces of metadata are summarized here, but in my script I made a variable for each metadata item based on which column (either contained in context or indexed by MeSH) normally has the best version of that piece of metadata, and so it should be a relatively simple thing to add any piece of metadata you desire. 
      * Information about how data-parsing was accomplished can be found at the bottom of this document.
 * **AGES_testing.txt**: Look at this to verify that the age and gender were extracted correctly from the demographics.  Each line represents one CCR.
