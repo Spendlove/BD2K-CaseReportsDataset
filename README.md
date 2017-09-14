@@ -8,7 +8,7 @@ UCLA Heart BD2K Case Reports Dataset metadata extraction script.
 * *Contained in Context*: Other metadata obtained elsewhere, usually from Web of Science or the full text of the article.
 
 ## Usage Instructions
- 
+
 ### File Explanations
 
 You should be able to download the following files from this GitHub page.
@@ -19,6 +19,7 @@ You should be able to download the following files from this GitHub page.
 * [**nlmcatalog_result.xml²**](https://github.com/Spendlove/BD2K-CaseReportsDataset/blob/master/nlmcatalog_result.xml): This is necessary for prep_journals.py.  This file contains journal xml information retrieved from the NLM catalog(2).
 * [**prep_journals.py**](https://github.com/Spendlove/BD2K-CaseReportsDataset/blob/master/prep_journals.py): This was used to create impact_dict.txt, and journal_dict.txt, which ExtractionScript.py reads in as dictionaries.  The impact_dict.txt file maps journal names to journal impact factors, and is taken directly from Journal_Impact_factor_2017.txt, while journal_dict.txt maps journal name synonyms to the version of the journal name used in impact_dict.txt, and is taken from both Journal_Impact_factor_2017.txt and nlmcatalog_result.xml. 
 * [**requirements.txt**](https://github.com/Spendlove/BD2K-CaseReportsDataset/blob/master/requirements.txt): Used to create the virtual environment using virtualenv.
+* [**template_metadata-SS.xlsx**](./template_metadata-SS.xlsx
 
 ### Input Data
 
