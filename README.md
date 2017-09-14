@@ -28,7 +28,7 @@ Download these from Google Drive directory
 
 Go through and move all the files into the main directory and then delete the empty subfolders.  (Unless you want to change the script and tell it to go check all those directories.  It’s easier if all the files are in one directory though.)
 
-*Note: there are still a few duplicates and problem files on the Google Drive.  See terminal output when you read the script.  See also “Errors” column in main output file.*
+*__Note: there are still a few duplicates and problem files on the Google Drive.  See terminal output when you read the script.  See also “Errors” column in main output file.__*
 
 ### Setting Up Virtual Environment
 
@@ -46,7 +46,6 @@ Every other time, as long as you are in the same place in our filesystem, you si
 ```
 source my_env/bin/activate
 ```
-For further information about using virtualenv see [here](http://docs.python-guide.org/en/latest/dev/virtualenvs/) and here(https://stackoverflow.com/questions/14684968/how-to-export-virtualenv)
 
 ### Running prep_journals.py
 
@@ -105,6 +104,7 @@ The terminal output has three parts
 ## Acknowledgements
 * Thanks to the many collaborators on [StackOverflow](https://stackoverflow.com).  This was an invaluable resource in developing the scripts.
 * Selection of other helpful resources:
+     * For further information about using virtualenv see [here](http://docs.python-guide.org/en/latest/dev/virtualenvs/) and [here](https://stackoverflow.com/questions/14684968/how-to-export-virtualenv)
      * GitHub README [template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
      * The [word2number](https://pypi.python.org/pypi/word2number/1.1) package
      * Pandas [documentation](https://pandas.pydata.org/pandas-docs/stable/)and [cheatsheet](https://s3.amazonaws.com/assets.datacamp.com/blog_assets/PandasPythonForDataScience.pdf)
