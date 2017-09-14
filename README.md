@@ -32,7 +32,7 @@ Go through and move all the files into the main directory and then delete the em
 
 ### Setting Up Virtual Environment
 
-This script uses virtualenv(3) to create a virtual environment in which to run the script.  This ensures that the necessary python version and packages are installed.  The “requirements.txt” file will allow you to create your own copy of this environment in your own file system. Here I will give directions on how to create and use this virtual environment. For the sake of the example, we will call it “my_env,” but it doesn’t matter what you call it.
+This script uses [virtualenv](https://virtualenv.pypa.io/en/stable/) to create a virtual environment in which to run the script.  This ensures that the necessary python version and packages are installed.  The “requirements.txt” file will allow you to create your own copy of this environment in your own file system. Here I will give directions on how to create and use this virtual environment. For the sake of the example, we will call it “my_env,” but it doesn’t matter what you call it.
 
 The first time, run the following to create the virtual environment:
 ```
@@ -97,9 +97,8 @@ The terminal output has three parts
 ## Future Directions
 
 ## Sources
-1. <impact factor table source goes here>
+1. (impact factor table source goes here)
 2. NLM Catalog [Internet]. Bethesda MD: National Library of Medicine (US). [date unknown] - . Results from searching currentlyindexed[All] and downloading in XML format; [cited 2017 Sep 14]. Available from: https://www.ncbi.nlm.nih.gov/nlmcatalog?Db=journals&Cmd=DetailsSearch&Term=currentlyindexed%5BAll%5D.
-3. <virtualenv source goes here>
  
 ## Acknowledgements
 * Thanks to the many collaborators on [StackOverflow](https://stackoverflow.com).  This was an invaluable resource in developing the scripts.
