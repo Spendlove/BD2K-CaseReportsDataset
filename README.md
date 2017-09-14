@@ -1,5 +1,5 @@
 # BD2K-CaseReportsDataset
-UCLA Heart BD2K Case Reports Dataset metadata extraction script
+UCLA Heart BD2K Case Reports Dataset metadata extraction script.
 
 ## Abbreviations and Syntax
 
@@ -97,11 +97,11 @@ The terminal output has three parts
 ## Future Directions
 
 ## Sources
-1. (impact factor table source goes here)
+1. InCites™ 2017 Journal Citation Reports© [Internet].  Thomson Reuters [date unknown] - . Excel file downloaded from Research Gate post by Murtaza Sayed; [cited 2017 Sep 14]. Available from: https://www.researchgate.net/post/New_Impact_factors_2017_for_Journals_are_released_now.
 2. NLM Catalog [Internet]. Bethesda MD: National Library of Medicine (US). [date unknown] - . Results from searching currentlyindexed[All] and downloading in XML format; [cited 2017 Sep 14]. Available from: https://www.ncbi.nlm.nih.gov/nlmcatalog?Db=journals&Cmd=DetailsSearch&Term=currentlyindexed%5BAll%5D.
  
 ## Acknowledgements
-* Thanks to the many collaborators on [StackOverflow](https://stackoverflow.com).  This was an invaluable resource in developing the scripts.
+* Thanks to the many contributors on [StackOverflow](https://stackoverflow.com).  This was an invaluable resource in developing the scripts.
 * Selection of other helpful resources:
      * For further information about using virtualenv see [here](http://docs.python-guide.org/en/latest/dev/virtualenvs/) and [here](https://stackoverflow.com/questions/14684968/how-to-export-virtualenv)
      * GitHub README [template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
