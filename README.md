@@ -69,6 +69,11 @@ python ExtractionScript.py TEST/ testing.txt
 ```
 *__Note: Make sure you include the extra “/” at the end of the file path where the Excel files are stored!!__*
 
+If you want to save the terminal output to a file called "testing_terminal_output.txt", you can do the following:
+```
+python ExtractionScript.py TEST/ testing.txt > testing_terminal_output.txt
+```
+
 ### Explanation of Output Files
 * **testing.txt**: Main output summary table.  Each line represents one CCR.  Summarizes the most important pieces of information from the dataset, including indicating which disease systems each CCR is related to.  In addition it also parses some of the data (like demographics) into a more analyzable form.  *__Note: We may want to edit which pieces of information are contained here slightly.__*
      * Not all the pieces of metadata are summarized here, but in my script I made a variable for each metadata item based on which column (either contained in context or indexed by MeSH) normally has the best version of that piece of metadata, and so it should be a relatively simple thing to add any piece of metadata you desire. 
