@@ -30,9 +30,9 @@ The following file is not neccessary for running any of the scripts, but is a te
 ### Input Data
 You will need to have a directory that contains the Excel sheets you want to process.  For example, could have a “1800” directory containing our 1800 metadata extraction excel files. 
 
-Download these from Google Drive directory
+Download these from Google Drive directory.
 
-Go through and move all the files into the main directory and then delete the empty subfolders.  (Unless you want to change the script and tell it to go check all those directories.  It’s easier if all the files are in one directory though.)
+Go through and move all the files into the main directory and then delete the empty subfolders.  (Unless you want to change the script and tell it to go check all those directories.) Note, the correct versions of Jessica's files are in the "Homogenized Files" folder under her subfolder.  Ignore the other file versions.
 
 *__Note: there are still a few duplicates and problem files on the Google Drive.  See terminal output when you read the script.  See also “Errors” column in main output file.__*
 
@@ -116,11 +116,12 @@ Here I will explain how we parsed and double checked some of the information.
 #### Parsing the Number of References
 (coming soon)
 
-## Future Directions
+## Future Work
 There are several improvements that can be made to this part of the project.
 * There are still some journal names that we don't have impact factors for. I am not sure what percentage of those is due to those journals not having impact factors, and what percentage is because we are missing name variations.  It would be good for someone to look into this and do some optimizations to make sure all journals that have impact factors are covered.  Edit the prep_journals.py file to do this, and then rerun the file to get updated dictionary files.
 * Clement came up with a good way to condense some of the code into fewer lines.  He is planning on working on that.
-* As has been discussed previously, there will probably be some normalizations and such to do on the data to help make up for some of the inconsistencies in data extraction methods.
+* There are still some formatting inconcsistencies and errors in the datafiles. See "errors" column in main output file. Throughout my code I generate various error and warning messages and then concatenate these into the error column at the end of the file. It would be very good for someone to go through those warnings and errors and try to account for them.
+* As has been discussed previously, there will probably be normalizations and such to do on the data to help make up for some of the inconsistencies in data extraction methods.
 * It would also be good for someone to look at the AGES files and make sure there are no weirdly formatted genders/ages we are parsing wrong.  You could also do more general error checking to make sure we are returning everything right. 
 
 ## Sources
