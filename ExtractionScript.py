@@ -39,7 +39,7 @@ with open('journal_dict.txt','r') as all_js:
 		name=line[0].strip()
 		correct=line[1].strip()
 		journal_dict[name]=correct
-bad_journals=io.open('./badjournals_'+outputFileName+'.txt','w', encoding="utf-8")
+bad_journals=io.open('./JOURNALS_MISSING_IMPACT_FACTOR_'+outputFileName,'w', encoding="utf-8")
 
 #Write the headers in the output files
 ages_file.write(unicode('File'+'\t'+'ByHand'+'\t'+'MeSH'+'\t'+'Age'+'\t'+'Gender'))
@@ -86,6 +86,7 @@ for f in os.listdir(inputDirectoryPath):
 			sheet_num=-2
 		if contributor=="JL":
 			myDF=pd.read_excel(myX,sheetname=-1, header=None, parse_cols="A:F", encoding="utf-8")
+			##Might want to double check the above. I'm not 100% sure whether encoding means the dataframe will be in unicode or the excel file is in unicode.  I wrote this intending the first.
 			cols = [0,1,3,2,4,5]
 			myDF=myDF[cols]
 			#https://stackoverflow.com/questions/13148429/how-to-change-the-order-of-dataframe-columns
@@ -197,9 +198,9 @@ for f in os.listdir(inputDirectoryPath):
 		s2_doi=myDF.iloc[15,2]
 		r1_doi=unicode(myDF.iloc[15,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_doi=unicode(myDF.iloc[15,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
-		doi=r1_pmid ####################
-		if r1_pmid==u"nan":
-			doi=r2_pmid
+		doi=r1_doi ####################
+		if r1_doi==u"nan":
+			doi=r2_doi
 
 		s1_link=myDF.iloc[16,1]
 		s2_link=myDF.iloc[16,2]
@@ -430,7 +431,7 @@ for f in os.listdir(inputDirectoryPath):
 			impact=impact_factors[journal]
 		elif r3_impact ==u"nan":
 			impact=r3_impact
-			e=u'ERROR: '+journal+u' not listed in impact factor table and not in excel sheet'
+			e=u'Error: '+journal+u' not listed in impact factor table and not in excel sheet'
 			errors.append(e)
 			#print(e)
 			not_present_journals.add(journal)
@@ -439,7 +440,7 @@ for f in os.listdir(inputDirectoryPath):
 #			bad_journals.write(journal+u'\n')
 		else:
 			impact=r3_impact
-			e=u'WARNING '+journal+u' not listed in impact factor table'
+			e=u'Warning: '+journal+u' not listed in impact factor table'
 			not_present_journals.add(journal)
 			impact_error_num2=impact_error_num2+1
 			###########################FIX#########FIX#####################FIX#################FIX#################FIX
@@ -449,8 +450,8 @@ for f in os.listdir(inputDirectoryPath):
 	
 		####_CHECK_PMID_##########
 		if PMID not in f:
-			print u'ERROR! PMID does not match file name.  PMID is '+PMID+u' and file name is '+f
-			errors.append(u'ERROR: PMID does not match file name. PMID is '+PMID+u' and file name is '+f)
+			print u'Error: PMID does not match file name.  PMID is '+PMID+u' and file name is '+f
+			errors.append(u'Error: PMID does not match file name. PMID is '+PMID+u' and file name is '+f)
 
 		#####_PARSE_AGE_########
 #####################################MAKE_IT_SO_IT_HANDLES_UNICODE
@@ -503,7 +504,7 @@ for f in os.listdir(inputDirectoryPath):
 		elif len(genders)==2:
 			if len(g2)==1:
 				gender=unicode(g2.pop().lower())
-				e=u'Warning!!!! gender may be wrong in file'
+				e=u'Warning: gender may be wrong in file'
 				errors.append(e)
 				print(e+u" "+f)
 			else:
@@ -520,18 +521,18 @@ for f in os.listdir(inputDirectoryPath):
 				g_str=u""
 				for g in g2:
 					g_str=g_str+g+u"_"
-				e=u"ERROR! LENGTH OF GENDER STRING GREATER THAN TWO: "+g_str
+				e=u"Error: Length of gender string greater than two: "+g_str
 				errors.append(e)
 				print(e+u" in file "+f)
 		else:
-			e=u"ERROR! LENGTH OF GENDER STRING GREATER THAN TWO"
+			e=u"Error: Length of gender string greater than two"
 			errors.append(e)
 			print(e+u" in file "+f)
 
 		#####_PARSE_DISEASE_SYSTEM_########
 		if r1_organ_system==u"nan":
 			OrganSystem=[u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA']
-			e=u"Error, no disease system listed"
+			e=u"Error: no disease system listed"
 			errors.append(e)
 			#print(e+u" in file "+f)
 		else:
@@ -597,11 +598,11 @@ for f in os.listdir(inputDirectoryPath):
 				urls=re.findall(ur'https:\S*', str(r2_crosslink_with_database))
 				if len(urls)>0:
 					crosslinkWithDatabase=unicode(len(urls))#+'*'
-					#print 'WARNING: Crosslinks in file '+f+' in wrong format. Computing answer assuming only 1 per link'
-					errors.append(u"WARNING: Crosslinks in wrong format, computing answer assuming only 1 crosslink per link")
+					#print 'Warning: Crosslinks in file '+f+' in wrong format. Computing answer assuming only 1 per link'
+					errors.append(u"Warning: Crosslinks in wrong format, computing answer assuming only 1 crosslink per link")
 				else:
 					crosslinkWithDatabase=u"ERROR"
-					e=u"ERROR: Parsing error in crosslink with database row"
+					e=u"Error: Parsing error in crosslink with database row"
 					errors.append(e)
 					print(e+u" in file "+f)
 		#########_PARSE_Images_Or_Videos##############
@@ -628,7 +629,7 @@ for f in os.listdir(inputDirectoryPath):
 				e="Warning: Missing numbers of illustrations/graphs, videos, and tables"
 				errors.append(e)
 			else:
-				e=u"ERROR: IMAGE NUMBERS IN WRONG FORMAT"
+				e=u"Error: IMAGE NUMBERS IN WRONG FORMAT"
 				errors.append(e)
 				print(e+u": "+r1_images_or_videos+u" (in file "+unicode(f)+u")")
 #				images=r1_images_or_videos
@@ -643,12 +644,12 @@ for f in os.listdir(inputDirectoryPath):
 			if len(ref_nums)>=1:
 				references=ref_nums[0]
 				if len(ref_nums)>1:
-					e=u'Warning, references cell has multiple numbers. Taking first one.'
+					e=u'Warning: references cell has multiple numbers. Taking first one.'
 					errors.append(e)
 					print(e+u" In file "+unicode(f))
 			elif len(ref_nums)==0:
 				references==u"ERROR"
-				e=u"ERROR: references in wrong format"
+				e=u"Error: references in wrong format"
 				errors.append(e)
 				print(e+u": "+r1_references+u" (in file "+unicode(f)+")")
 
@@ -692,11 +693,11 @@ for f in os.listdir(inputDirectoryPath):
 		raw_PMED_file.write(unicode(CR_Number)+u'\t'+r2_title+u'\t'+r2_authors+u'\t'+r2_year+u'\t'+r2_journal+u'\t'+r2_institution+u'\t'+r2_senior_author+u'\t'+r2_pmid+u'\t'+r2_doi+u'\t'+r2_link+u'\t'+r2_languages+u'\t'+r2_key_words+u'\t'+r2_demographics+u'\t'+r2_geographic_location+u'\t'+r2_life_style+u'\t'+r2_family_history+u'\t'+r2_social_background+u'\t'+r2_medical_surgical_history+u'\t'+r2_organ_system+u'\t'+r2_symptoms_and_signs+u'\t'+r2_comorbidities+u'\t'+r2_diagnostic_procedure+u'\t'+r2_disease_diagnosis+u'\t'+r2_laboratory_values+u'\t'+r2_pathology+u'\t'+r2_pharmacological_therapy+u'\t'+r2_therapeutic_intervention+u'\t'+r2_outcome+u'\t'+r2_images_or_videos+u'\t'+r2_relationship_to_other_case_reports+u'\t'+r2_relationship_to_published_clinical_trials+u'\t'+r2_crosslink_with_database+u'\t'+r2_funding_source+u'\t'+r2_award_number+u'\t'+r2_disclosures_conflict_of_interest+u'\t'+r2_references)
 
 #Write all of the journals we do not have an impact factor for in a file
-e1=u"ERROR: "+unicode(impact_error_num1)+u" files did not have an impact factor listed and the impact factor can't be inferred from the journal name."
+e1=u"Error: "+unicode(impact_error_num1)+u" files did not have an impact factor listed and the impact factor can't be inferred from the journal name."
 e2=u"Warning: "+unicode(impact_error_num2)+u" files had impact factors listed, but the updated impact factor can't be inferred from the journal name, so the impact factor in the output file may be wrong."
 e3=u"Total unrecognized journal names: "+unicode(len(not_present_journals))
 
-print(u"\n ------Impact Factor Probs------")
+print(u"\n------Impact Factor Problems------")
 print e1
 print e2
 print e3
