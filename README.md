@@ -99,8 +99,8 @@ The terminal output has three parts
      * My script keeps track of which case report numbers are used and prints out which are duplicated and which are missing (assuming you desire CCRs from 0001 to 1800).  Feel free to edit the code to look for a different CCR number range if needed.
      * Be careful, the “duplicates” may really be duplicates, but they may also simply be unique files that were accidentally given the same CCR number
      
-###Saving Output Files to Excel Files
-Because of the many non ASCII characters in the input files, I decided to write the output files in "UTF-8" unicode, and so in the Text Import Wizard in Excel, you need to specify the file origin as "Unicode(UTF-8)." To pull up the Text Import Wizard in Excel for Mac, be sure to open the Excel file from within Excel, and not from the Finder window.
+### Saving Output Files to Excel Files
+**_Because of the many non ASCII characters in the input files, I decided to write the output files in "UTF-8" unicode, and so in the Text Import Wizard in Excel, you need to specify the file origin as "Unicode(UTF-8)." To pull up the Text Import Wizard in Excel for Mac, be sure to open the Excel file from within Excel, and not from the Finder window._**
 
 ## Parsing And Quality Control Explanations
 Here I will explain how we parsed and double checked some of the information.
