@@ -10,15 +10,14 @@ UCLA Heart BD2K Case Reports Dataset metadata extraction script.
 ## Usage Instructions
 
 ### File Explanations
-
 You should be able to download the following files from this GitHub page.
 * [**ExtractionScript.py**](./ExtractionScript.py): This is the main script you will be using. 
 * [**prep_journals.py**](./prep_journals.py): This is used to create impact_dict.txt, and journal_dict.txt, which ExtractionScript.py reads in as dictionaries.  The impact_dict.txt file maps journal names to journal impact factors, and is taken directly from Journal_Impact_factor_2017.txt, while journal_dict.txt maps journal name synonyms to the version of the journal name used in impact_dict.txt, and is taken from both Journal_Impact_factor_2017.txt and nlmcatalog_result.xml. 
-* [**nlmcatalog_result.xml²**](./nlmcatalog_result.xml): This is necessary for prep_journals.py.  This file contains journal xml information retrieved from the NLM catalog².
+* [**nlmcatalog_result.xml¹**](./nlmcatalog_result.xml): This is necessary for prep_journals.py.  This file contains journal xml information retrieved from the NLM catalog¹.
 * [**requirements.txt**](./requirements.txt): Used to create the virtual environment using virtualenv.
 
 You should be able to download the following file online.
-* [**Journal_Impact_factor_2017.txt¹**](https://www.researchgate.net/file.PostFileLoader.html?id=59421163eeae3996516e41ae&assetKey=AS%3A524678465638401%401502104502262): This is an excel file with the InCites™ 2017 Journal Citation Reports© and is necessary for running prep_journals.py. 
+* [**Journal_Impact_factor_2017.txt²**](https://www.researchgate.net/file.PostFileLoader.html?id=59421163eeae3996516e41ae&assetKey=AS%3A524678465638401%401502104502262): This is an excel file with the InCites™ 2017 Journal Citation Reports© and is necessary for running prep_journals.py. 
 
 You should be able to make these files by running prep_journals.py.
 * **impact_dict.txt**: This is necessary for ExtractionScript.py, and is created by prep_journals.py.  Once you activate the virtual environment you can run prep_journals.py to create this.
@@ -29,7 +28,6 @@ The following file is not neccessary for running any of the scripts, but is a te
 
 
 ### Input Data
-
 You will need to have a directory that contains the Excel sheets you want to process.  For example, could have a “1800” directory containing our 1800 metadata extraction excel files. 
 
 Download these from Google Drive directory
@@ -39,7 +37,6 @@ Go through and move all the files into the main directory and then delete the em
 *__Note: there are still a few duplicates and problem files on the Google Drive.  See terminal output when you read the script.  See also “Errors” column in main output file.__*
 
 ### Setting Up Virtual Environment
-
 This script uses [virtualenv](https://virtualenv.pypa.io/en/stable/) to create a virtual environment in which to run the script.  This ensures that the necessary python version and packages are installed.  The “requirements.txt” file will allow you to create your own copy of this environment in your own file system. Here I will give directions on how to create and use this virtual environment. For the sake of the example, we will call it “my_env,” but it doesn’t matter what you call it.
 
 The first time, run the following to create the virtual environment:
@@ -56,14 +53,12 @@ source my_env/bin/activate
 ```
 
 ### Running prep_journals.py
-
 You only really need to run this if you need the journal_dict.txt and impact_dict.txt files, and you only need to run it once, unless you edit the prep_journals.py file.  You actually may want to edit this file to try to see if you can catch any more journal name variations. If you do change it, then be sure to rerun this file before running ExtractionScript.py
 ```
 python prep_journals.py 
 ```
 
 ### Running ExtractionScript.py
-
 Make sure you are still inside the correct directory, containing this script, the virtual environment folder, and the files created by prep_journals.py.  You also need to know the file path of the directory containing the desired Excel files.  I usually just put the Excel files in a subdirectory of the directory I am working in. For this example, we will run the script on the files in a “TEST” directory that is assumed to be inside the directory you are working in.
 
 Decide on a base name for your output files (In this case we will use “testing.txt”)
@@ -75,7 +70,6 @@ python ExtractionScript.py TEST/ testing.txt
 *__Note: Make sure you include the extra “/” at the end of the file path where the Excel files are stored!!__*
 
 ### Explanation of Output Files
-
 * **testing.txt**: Main output summary table.  Each line represents one CCR.  Summarizes the most important pieces of information from the dataset, including indicating which disease systems each CCR is related to.  In addition it also parses some of the data (like demographics) into a more analyzable form.  *__Note: We may want to edit which pieces of information are contained here slightly.__*
      * Not all the pieces of metadata are summarized here, but in my script I made a variable for each metadata item based on which column (either contained in context or indexed by MeSH) normally has the best version of that piece of metadata, and so it should be a relatively simple thing to add any piece of metadata you desire. 
      * Information about how data-parsing was accomplished can be found at the bottom of this document.
@@ -105,9 +99,9 @@ The terminal output has three parts
 ## Future Directions
 
 ## Sources
-1. InCites™ 2017 Journal Citation Reports© [Internet].  Thomson Reuters [date unknown] - . Excel file downloaded from Research Gate post by Murtaza Sayed; [cited 2017 Sep 14]. Available from: https://www.researchgate.net/post/New_Impact_factors_2017_for_Journals_are_released_now.
-2. NLM Catalog [Internet]. Bethesda MD: National Library of Medicine (US). [date unknown] - . Results from searching currentlyindexed[All] and downloading in XML format; [cited 2017 Sep 14]. Available from: https://www.ncbi.nlm.nih.gov/nlmcatalog?Db=journals&Cmd=DetailsSearch&Term=currentlyindexed%5BAll%5D.
- 
+1. NLM Catalog [Internet]. Bethesda MD: National Library of Medicine (US). [date unknown] - . Results from searching currentlyindexed[All] and downloading in XML format; [cited 2017 Sep 14]. Available from: https://www.ncbi.nlm.nih.gov/nlmcatalog?Db=journals&Cmd=DetailsSearch&Term=currentlyindexed%5BAll%5D.
+2. InCites™ 2017 Journal Citation Reports© [Internet].  Thomson Reuters [date unknown] - . Excel file downloaded from Research Gate post by Murtaza Sayed; [cited 2017 Sep 14]. Available from: https://www.researchgate.net/post/New_Impact_factors_2017_for_Journals_are_released_now.
+
 ## Acknowledgements
 * Thanks to the many contributors on [StackOverflow](https://stackoverflow.com).  This was an invaluable resource in developing the scripts.
 * Selection of other helpful resources:
