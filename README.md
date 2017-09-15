@@ -110,7 +110,11 @@ Here I will explain how we parsed and double checked some of the information
 #### Parsing the Number of References
 
 ## Future Directions
-There are several improvements that can be made to this part of the project.  For one,
+There are several improvements that can be made to this part of the project.
+* There are still some journal names that we don't have impact factors for. I am not sure what percentage of those is due to those journals not having impact factors, and what percentage is because we are missing name variations.  It would be good for someone to look into this and do some optimizations to make sure all journals that have impact factors are covered.  Edit the prep_journals.py file to do this, and then rerun the file to get updated dictionary files.
+* Clement came up with a good way to condense some of the code into fewer lines.  He is planning on working on that.
+* As has been discussed previously, there will probably be some normalizations and such to do on the data to help make up for some of the inconsistencies in data extraction methods.
+* It would also be good for someone to look at the AGES files and make sure there are no weirdly formatted genders/ages we are parsing wrong.  You could also do more general error checking to make sure we are returning everything right. 
 
 ## Sources
 1. NLM Catalog [Internet]. Bethesda MD: National Library of Medicine (US). [date unknown] - . Results from searching currentlyindexed[All] and downloading in XML format; [cited 2017 Sep 14]. Available from: https://www.ncbi.nlm.nih.gov/nlmcatalog?Db=journals&Cmd=DetailsSearch&Term=currentlyindexed%5BAll%5D.
