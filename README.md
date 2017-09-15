@@ -53,7 +53,7 @@ source my_env/bin/activate
 ```
 
 ### Running prep_journals.py
-You only really need to run this if you need the journal_dict.txt and impact_dict.txt files, and you only need to run it once, unless you edit the prep_journals.py file.  You actually may want to edit this file to try to see if you can catch any more journal name variations. If you do change it, then be sure to rerun this file before running ExtractionScript.py
+You only really need to run this once to create  the journal_dict.txt and impact_dict.txt files, unless you edit the prep_journals.py file.  *(You actually may want to edit this file to try to see if you can catch any more journal name variations. But if you do modify the file, then be sure to rerun it before running ExtractionScript.py so that you have updated versions of journal_dict.txt and impact_dict.txt.)*
 ```
 python prep_journals.py 
 ```
@@ -73,7 +73,7 @@ python ExtractionScript.py TEST/ testing.txt
 * **testing.txt**: Main output summary table.  Each line represents one CCR.  Summarizes the most important pieces of information from the dataset, including indicating which disease systems each CCR is related to.  In addition it also parses some of the data (like demographics) into a more analyzable form.  *__Note: We may want to edit which pieces of information are contained here slightly.__*
      * Not all the pieces of metadata are summarized here, but in my script I made a variable for each metadata item based on which column (either contained in context or indexed by MeSH) normally has the best version of that piece of metadata, and so it should be a relatively simple thing to add any piece of metadata you desire. 
      * Information about how data-parsing was accomplished can be found at the bottom of this document.
-* **AGES_testing.txt**: Look at this to verify that the age and gender were extracted correctly from the demographics.  Each line represents one CCR.
+* **AGES_testing.txt**: Look at this to verify that the age and gender were parsed correctly from the demographics.  Each line represents one CCR.
 * **CCR_NUMS_testing.txt**: Gives a list of the CCR number, the PMID, and contributor initials for each CCR. 
 * **JOURNALS_MISSING_IMPACT_FACTOR_testing.txt**: Gives a list of all the journal names the script didn’t recognize, and thus was unable to assign an updated impact factor.  
 * **RAW_IN_CONTEXT_testing.txt**: Contains raw, unparsed information from the “Contained in Context” column.  Each line represents one CCR.
@@ -94,9 +94,18 @@ The terminal output has three parts
      * My script keeps track of which case report numbers are used and prints out which are duplicated and which are missing (assuming you desire CCRs from 0001 to 1800).  Feel free to edit the code to look for a different CCR number range if needed.
      * Be careful, the “duplicates” may really be duplicates, but they may also simply be unique files that were accidentally given the same CCR number
 
-## Parsing Explanation
+## Parsing And Quality Control Explanations
+Here I will explain how we parsed and double checked some of the information
+#### Standardization of Journal Name and Impact Factor
+#### Checking in file PMID with PMID in File Name
+#### Parsing Age and Gender from "Demographics" Text
+#### Parsing "Disease System" Text into Binary Values Representing Each of 15 Disease Systems
+#### Parsing Number of Database Crosslinks from "Crosslink with Database" Text
+#### Parsing the Number of Images, Illustrations, Videos, and Tables from "Diagnostic Imaging/Videotape Recording" Text
+#### Parsing the Number of References
 
 ## Future Directions
+There are several improvements that can be made to this part of the project.  For one,
 
 ## Sources
 1. NLM Catalog [Internet]. Bethesda MD: National Library of Medicine (US). [date unknown] - . Results from searching currentlyindexed[All] and downloading in XML format; [cited 2017 Sep 14]. Available from: https://www.ncbi.nlm.nih.gov/nlmcatalog?Db=journals&Cmd=DetailsSearch&Term=currentlyindexed%5BAll%5D.
