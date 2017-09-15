@@ -100,14 +100,21 @@ The terminal output has three parts
      * Be careful, the “duplicates” may really be duplicates, but they may also simply be unique files that were accidentally given the same CCR number
 
 ## Parsing And Quality Control Explanations
-Here I will explain how we parsed and double checked some of the information
+Here I will explain how we parsed and double checked some of the information.
 #### Standardization of Journal Name and Impact Factor
+(coming soon)
 #### Checking in file PMID with PMID in File Name
+(coming soon)
 #### Parsing Age and Gender from "Demographics" Text
+(coming soon)
 #### Parsing "Disease System" Text into Binary Values Representing Each of 15 Disease Systems
+(coming soon)
 #### Parsing Number of Database Crosslinks from "Crosslink with Database" Text
+(coming soon)
 #### Parsing the Number of Images, Illustrations, Videos, and Tables from "Diagnostic Imaging/Videotape Recording" Text
+(coming soon)
 #### Parsing the Number of References
+(coming soon)
 
 ## Future Directions
 There are several improvements that can be made to this part of the project.
