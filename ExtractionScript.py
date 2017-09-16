@@ -1,3 +1,6 @@
+#Author: Sarah Spendlove
+#https://github.com/Spendlove/BD2K-CaseReportsDataset
+
 import sys
 import io
 import os
@@ -20,13 +23,12 @@ ccr_num_file=io.open('./CCR_NUMS_'+outputFileName,'w',encoding="utf-8")
 raw_CIC_file=io.open('./RAW_IN_CONTEXT_'+outputFileName,'w',encoding="utf-8")
 raw_PMED_file=io.open('./RAW_INDEX_BY_MESH_'+outputFileName,'w',encoding="utf-8")
 
-#Creating two dictionaries: impact_factors maps journal names to the correct impact factor. journal_dict maps the journal name used in impact_factors to other ways to write the same name. Two files, impact_dict.txt and journal_dict.txt should be in the file provided. If not, please run prep_journals.py to create the files that these dictionaries will be read in from.  (Faster to read in from a saved file than to compute the mappings again every time.) NOTE: There is something funky going on with trying to do this all.  I am still not sure whether the problem is in prep_journals.py or ExtractionScript.py.
-#also creating not present journals set and stuff
+#Creating two dictionaries: impact_factors maps journal names to the correct impact factor. journal_dict maps the journal name used in impact_factors to other ways to write the same name. This requires two files, impact_dict.txt and journal_dict.txt, that prep_journals.py creates. (See GitHub) If not, please run prep_journals.py to create the files that these dictionaries will be read in from.  (Faster to read in from a saved file than to compute the mappings again every time.)  Also initializing a set to put unrecognized journal names in.
 impact_factors={}
 journal_dict={}
 not_present_journals=set()
-impact_error_num1=0
-impact_error_num2=0
+impact_error_num1=0 #Used for terminal output to determine the number of files without an impact factor
+impact_error_num2=0 #Used for terminal output to determine the number of files with an impact factor that hasn't been updated.
 with open('./impact_dict.txt','r') as impact_js:
 	for line in impact_js:
 		line=line.split('\t')
@@ -46,68 +48,81 @@ ages_file.write(unicode('File'+'\t'+'ByHand'+'\t'+'MeSH'+'\t'+'Age'+'\t'+'Gender
 ccr_num_file.write(unicode('CR Number'+'\t'+'PMID'+'\t'+'Collector'))
 output.write(unicode('CR Number'+'\t'+'PMID'+'\t'+'Citations'+'\t'+'Title'+'\t'+'Year'+'\t'+'Journal'+'\t'+'Impact Factor'+'\t'+'Medical Context Score'+'\t'+'Medical MeSH Score'+'\t'+'Key Words'+'\t'+'Age'+'\t'+'Gender'+'\t'+'Geographic Locations'+'\t'+'Life Style'+'\t'+'Medical History Taking-Family History'+'\t'+'Social Work'+'\t'+'Medical Histoy Taking-Medical/Surgical History'+'\t'+'Cancer'+'\t'+'Nervous System Diseases'+'\t'+'Cardiovascular Diseases'+'\t'+'Musculoskeletal Diseases and Rheumatological Diseasees'+'\t'+'Digestive System Diseases'+'\t'+'Obstetrical and Gynecological Diseases'+'\t'+'Infectious Diseases'+'\t'+'Respiratory Tract Diseases'+'\t'+'Hematologic Diseases'+'\t'+'Kidney Diseases and Urologic Diseases'+'\t'+'Endocrine System Diseases'+'\t'+'Oral and Maxillofacial Diseases'+'\t'+'Ophthalamological Diseases'+'\t'+'Otorhinolaryngologic Diseases'+'\t'+'Skin Diseases'+'\t'+'Signs and Symptoms'+'\t'+'Comorbidity'+'\t'+'Diagnostic Techniques and Procedures'+'\t'+'Diagnosis'+'\t'+'Laboratory Values'+'\t'+'Pathology'+'\t'+'Drug Therapy'+'\t'+'Therapeutics'+'\t'+'Patient Outcome Assesment'+'\t'+'Images'+'\t'+'Graphs or Illustrations'+'\t'+'Videos'+'\t'+'Tables'+'\t'+'Relationship to Other Case Reports'+'\t'+'Relationship with Clinical Trial'+'\t'+'Crosslink with Database'+'\t'+'References'+'\t'+'Access Date'+'\t'+'Errors'))
 score_file.write(unicode('Case Report Number'+'\t'+'PMID'+'\t'+'Index'+'\t'+'Total'+'\t'+'Case Report Identification (Findable)'+'\t'+'Medical content (Accessable, Interoperable, Reusable)'+'\t'+'Acknowledgements'+'\t'+'Title'+'\t'+'Authors'+'\t'+'Year'+'\t'+'Journal'+'\t'+'Institution'+'\t'+'Corresponding Author'+'\t'+'PMID'+'\t'+'DOI'+'\t'+'Link'+'\t'+'Language(s)'+'\t'+'Key Words'+'\t'+'Demography'+'\t'+'Geographic Location'+'\t'+'Life Style'+'\t'+'Medical History Taking-Family history'+'\t'+'Social Work'+'\t'+'Medical History Taking-Medical/surgical history'+'\t'+'Disease System'+'\t'+'Signs and Symptoms'+'\t'+'Comorbidity'+'\t'+'Diagnostic Techniques and Procedures'+'\t'+'Diagnosis'+'\t'+'Laboratory Values'+'\t'+'Pathology'+'\t'+'Drug Therapy'+'\t'+'Therapeutics'+'\t'+'Patient Outcome Assessment'+'\t'+'Images or Videos'+'\t'+'Relationship to Other Case Reports'+'\t'+'Relationship to Published Clinical Trials'+'\t'+'Crosslink with Database'+'\t'+'Funding Source'+'\t'+'Award Number'+'\t'+'Disclosures/Conflict of Interest'+'\t'+'References'))
+raw_header=(unicode('Case Report Number'+'\t'+'Title'+'\t'+'Authors'+'\t'+'Year'+'\t'+'Journal'+'\t'+'Institution'+'\t'+'Corresponding Author'+'\t'+'PMID'+'\t'+'DOI'+'\t'+'Link'+'\t'+'Language(s)'+'\t'+'Key Words'+'\t'+'Demography'+'\t'+'Geographic Location'+'\t'+'Life Style'+'\t'+'Medical History Taking-Family history'+'\t'+'Social Work'+'\t'+'Medical History Taking-Medical/surgical history'+'\t'+'Disease System'+'\t'+'Signs and Symptoms'+'\t'+'Comorbidity'+'\t'+'Diagnostic Techniques and Procedures'+'\t'+'Diagnosis'+'\t'+'Laboratory Values'+'\t'+'Pathology'+'\t'+'Drug Therapy'+'\t'+'Therapeutics'+'\t'+'Patient Outcome Assessment'+'\t'+'Diagnostic Imaging/Videotape Recording'+'\t'+'Relationship to Other Case Reports'+'\t'+'Relationship to Published Clinical Trials'+'\t'+'Crosslink with Database'+'\t'+'Funding Source'+'\t'+'Award Number'+'\t'+'Disclosures/Conflict of Interest'+'\t'+'References'))
+raw_CIC_file.write(raw_header)
+raw_PMED_file.write(raw_header)
 
-#all_CIC_file.write(unicode('Case Report Number'+'\t'+'PMID'+'\t'+'Citation'+'\t'+'Access Date'+'\t'+'Index'+'\t'+'Case Report Identification (Findable)'+'\t'+
-#all_PMED_file.write(unicode('Case Report Number'+'\t'+'PMID'+'\t'+'Citation'+'\t'+'Access Date'+'\t'+'Index'+'\t'+'Case Report Identification (Findable)'+'\t'+
-##CHANFGE IMAGES NAME
-raw_CIC_file.write(unicode('Case Report Number'+'\t'+'Title'+'\t'+'Authors'+'\t'+'Year'+'\t'+'Journal'+'\t'+'Institution'+'\t'+'Corresponding Author'+'\t'+'PMID'+'\t'+'DOI'+'\t'+'Link'+'\t'+'Language(s)'+'\t'+'Key Words'+'\t'+'Demography'+'\t'+'Geographic Location'+'\t'+'Life Style'+'\t'+'Medical History Taking-Family history'+'\t'+'Social Work'+'\t'+'Medical History Taking-Medical/surgical history'+'\t'+'Disease System'+'\t'+'Signs and Symptoms'+'\t'+'Comorbidity'+'\t'+'Diagnostic Techniques and Procedures'+'\t'+'Diagnosis'+'\t'+'Laboratory Values'+'\t'+'Pathology'+'\t'+'Drug Therapy'+'\t'+'Therapeutics'+'\t'+'Patient Outcome Assessment'+'\t'+'Images or Videos'+'\t'+'Relationship to Other Case Reports'+'\t'+'Relationship to Published Clinical Trials'+'\t'+'Crosslink with Database'+'\t'+'Funding Source'+'\t'+'Award Number'+'\t'+'Disclosures/Conflict of Interest'+'\t'+'References'))
-raw_PMED_file.write(unicode('Case Report Number'+'\t'+'Title'+'\t'+'Authors'+'\t'+'Year'+'\t'+'Journal'+'\t'+'Institution'+'\t'+'Corresponding Author'+'\t'+'PMID'+'\t'+'DOI'+'\t'+'Link'+'\t'+'Language(s)'+'\t'+'Key Words'+'\t'+'Demography'+'\t'+'Geographic Location'+'\t'+'Life Style'+'\t'+'Medical History Taking-Family history'+'\t'+'Social Work'+'\t'+'Medical History Taking-Medical/surgical history'+'\t'+'Disease System'+'\t'+'Signs and Symptoms'+'\t'+'Comorbidity'+'\t'+'Diagnostic Techniques and Procedures'+'\t'+'Diagnosis'+'\t'+'Laboratory Values'+'\t'+'Pathology'+'\t'+'Drug Therapy'+'\t'+'Therapeutics'+'\t'+'Patient Outcome Assessment'+'\t'+'Images or Videos'+'\t'+'Relationship to Other Case Reports'+'\t'+'Relationship to Published Clinical Trials'+'\t'+'Crosslink with Database'+'\t'+'Funding Source'+'\t'+'Award Number'+'\t'+'Disclosures/Conflict of Interest'+'\t'+'References'))
 
 #Create dictionaries to help determine which CCR numbers exist and which do not
 CRnumsPresent=[]
 duplicates=[]
 
-#####
+#####################################################################################################################################################################
 print(u"\n------Selected Problems with Individual Files------")
-#Reads in all excell files and extracts the metadata
+
+#Reads in all Excel files and extracts the metadata
 for f in os.listdir(inputDirectoryPath):
 	if f.endswith('.xlsx') and f[0:2]!="~$":
-		#Extract Case Report Number and Contributor initials from file name
+		errors=[]
+		
+		#Extract Case Report Number
 		CR_Number=re.findall(ur'\d+',re.findall(ur'(?:CCR0?\d+)|(?:CC0?\d+)|(?:CR0?\d+)|(?:HCR0?\d+)',f)[0])[0] #Extracts CCR number from titles
-		contributor=f[-7:-5].upper()
-		if len(contributor.strip()) !=2: #Catches cases where there is an extra space in the title name
-			contributor=f[-8:-6].upper()
-		if len(contributor.strip()) !=2:
-			e=u"Bad file name, contributor comes out as: "+contributor
-			print(e+" in file "+unicode(f))
-			errors.append(e)
 		if CR_Number in CRnumsPresent:
 			duplicates.append(CR_Number)
 		else:
 			CRnumsPresent.append(CR_Number)
+								 
+		#Extracrt Contributor initials from file name. (NOTE: I kept running into files with bad endings, hence all the if statements, but if I had more time I would try to make this simpler and prettier using regular expressions.)
+		file_base=f[0:-5].strip()
+		if file_base.endswith(".xlsx"):
+			file_base=file_base[0:-5].strip()
+		if file_base.endswith("(1)") or file_base.endswith("(2)"):
+			file_base=file_base[0:-3].strip()
+		if file_base.endswith("~"):
+			file_base=file_base[0:-1].strip()
+		if file_base.endswith("copy"):
+			file_base=file_base[0:-4].strip()
+		if file_base.endswith(".xlsx"):
+			file_base=file_base[0:-5].strip()
+		file_base=file_base.strip(".")
+		file_base=file_base.strip()
+		contributor=file_base[-2:].upper().strip()
+		contributor_initials=("SS","DL","CF","DL","JZ","SM","JL","AG","TC")
+		if contributor not in contributor_initials:
+			e="Error: Bad file name, contributor comes out as: "+contributor
+			print(e+" in file "+unicode(f))
+			errors.append(e)
 
 
-		#Create a pandas dataframe object from excel file.  By default all blank values are turned to NaN. If one were to desire to check and make sure annotators remembered to fill out all sections and didn't forget any, then you would have to change this.
-		myX=pd.ExcelFile(inputDirectoryPath+f) #SOURCE!!
+		#Create a pandas dataframe object from Excel file.  By default all blank values are turned to NaN. If one were to desire to check and make sure annotators remembered to fill out all sections and didn't forget any, then you would have to change this.
+		myX=pd.ExcelFile(inputDirectoryPath+f)
 		myDF=None
 		sheet_num=-1
 		#print myX.sheet_names
 		if len(myX.sheet_names)==2:
 			sheet_num=-2
 		if contributor=="JL":
-			myDF=pd.read_excel(myX,sheetname=-1, header=None, parse_cols="A:F", encoding="utf-8")
-			##Might want to double check the above. I'm not 100% sure whether encoding means the dataframe will be in unicode or the excel file is in unicode.  I wrote this intending the first.
-			cols = [0,1,3,2,4,5]
+			myDF=pd.read_excel(myX,sheetname=-1, header=None, parse_cols="A:G", encoding="utf-8")
+			cols=[]
+			if len(myDF.columns) >=7:
+				cols = [0,1,3,2,4,5,6]
+			else:
+				cols = [0,1,3,2,4,5]
 			myDF=myDF[cols]
-			#https://stackoverflow.com/questions/13148429/how-to-change-the-order-of-dataframe-columns
 		elif contributor=="TC" or contributor=="SM":
-			myDF=pd.read_excel(myX,sheetname=sheet_num, header=None, parse_cols="A:F", encoding="utf-8")
+			myDF=pd.read_excel(myX,sheetname=sheet_num, header=None, parse_cols="A:G", encoding="utf-8")
 			myDF=myDF.drop(4).reset_index(drop=True)
-			
-#			if unicode(myDF.iloc[7,0]).strip()==u"Field":
-#				myDF=myDF.drop(4).reset_index(drop=True)
-
-#			elif unicode(myDF.iloc[0,0]).strip()==u"PMID":
-#				myDF
-#######EVENTually change so we fix the error. ccr 502 mission CCR number  adn so citations and acess date and stuff messsed up
 		else:
-			myDF=pd.read_excel(myX,sheetname=sheet_num, header=None, parse_colse="A:F", encoding="utf-8")
-		
-		
-	
-		
-		#initialize various variables for output files
-		errors=[]
+			myDF=pd.read_excel(myX,sheetname=sheet_num, header=None, parse_colse="A:G", encoding="utf-8")
+			if myDF[1].isnull().all(): #some of David's files had an extra blank column
+				cols=[]
+				if len(myDF.columns) >=7:
+					cols=[0,2,3,4,5,6]
+				else:
+					cols=[0,2,3,4,5]
+				myDF=myDF[cols]
+
+		#initialize some variables for output files
 		s1_Index=u"Contained in Context"
 		s2_Index=u"Index by MeSH"
 		
@@ -119,7 +134,7 @@ for f in os.listdir(inputDirectoryPath):
 		raw_CIC_file.write(u"\n")
 		raw_PMED_file.write(u"\n")
 		
-		#Extract values from spreadsheet. "s1" and "s2" stand for score 1 and 2. "r1" and "r2" stand for raw contained in context value and raw indexed by MeSH value
+		#Extract values from spreadsheet. "s1" and "s2" stand for score 1 and 2. "r1" and "r2" stand for raw contained in context value and raw indexed by MeSH value. Note, for some of the values like Title, I chose to use the r2 raw data, and for others like "signs and symptoms" I chose to use the r1 raw data.
 		
 		citations=myDF.iloc[2,1]
 		
@@ -130,13 +145,7 @@ for f in os.listdir(inputDirectoryPath):
 			access_date=unicode(access_date_object.month)+u"/"+unicode(access_date_object.day)+u"/"+unicode(access_date_object.year) ####################
 		elif type(access_date_object)==unicode:
 			access_date=access_date_object.replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
-#		if access_date_object==u"nan" or =="nan" or access_date_object==None:
-#				access_date=u"nan"
-#		else:
-#				access_date="ERROR"
-#				e="ERROR: BAD DATE FORMAT "+str(access_date_object)+" IN file "+f
-#				print(e)
-#				errors.append(e)
+			#Note: This doesn't check to make sure the unicode string is actually a date
 
 		s1_TOTAL=myDF.iloc[5,1]
 		s2_TOTAL=myDF.iloc[5,2]
@@ -156,7 +165,7 @@ for f in os.listdir(inputDirectoryPath):
 		s2_authors=myDF.iloc[9,2]
 		r1_authors=unicode(myDF.iloc[9,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_authors=unicode(myDF.iloc[9,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
-		authors=r1_authors ####################
+		authors=r1_authors #Not printed out in output file, but something that you may in the future want to include in the output file.
 
 		s1_year=myDF.iloc[10,1]
 		s2_year=myDF.iloc[10,2]
@@ -178,13 +187,13 @@ for f in os.listdir(inputDirectoryPath):
 		s2_institution=myDF.iloc[12,2]
 		r1_institution=unicode(myDF.iloc[12,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_institution=unicode(myDF.iloc[12,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
-		institution=r1_institution ####################
+		institution=r1_institution #Not printed out in output file, but something that you may in the future want to include in the output file.
 
 		s1_senior_author=myDF.iloc[13,1]
 		s2_senior_author=myDF.iloc[13,2]
 		r1_senior_author=unicode(myDF.iloc[13,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_senior_author=unicode(myDF.iloc[13,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
-		senior_author=r1_senior_author ####################
+		senior_author=r1_senior_author #Not printed out in output file, but something that you may in the future want to include in the output file.
 
 		s1_pmid=myDF.iloc[14,1]
 		s2_pmid=myDF.iloc[14,2]
@@ -198,7 +207,7 @@ for f in os.listdir(inputDirectoryPath):
 		s2_doi=myDF.iloc[15,2]
 		r1_doi=unicode(myDF.iloc[15,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_doi=unicode(myDF.iloc[15,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
-		doi=r1_doi ####################
+		doi=r1_doi #Not printed out in output file, but something that you may in the future want to include in the output file.
 		if r1_doi==u"nan":
 			doi=r2_doi
 
@@ -207,14 +216,14 @@ for f in os.listdir(inputDirectoryPath):
 		r1_link=unicode(myDF.iloc[16,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_link=unicode(myDF.iloc[16,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		article_link=r1_link
-		if r1_link ==u"nan": #######################DOES THIS WORK?
+		if r1_link ==u"nan": #Not printed out in output file, but something that you may in the future want to include in the output file.
 			article_link=r2_link
 
 		s1_languages=myDF.iloc[17,1]
 		s2_languages=myDF.iloc[17,2]
 		r1_languages=unicode(myDF.iloc[17,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_languages=unicode(myDF.iloc[17,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
-		languages=r1_languages ####################
+		languages=r1_languages #Not printed out in output file, but something that you may in the future want to include in the output file.
 
 		s1_MEDICAL_CONTENT=myDF.iloc[19,1]
 		s2_MEDICAL_CONTENT=myDF.iloc[19,2]
@@ -233,7 +242,6 @@ for f in os.listdir(inputDirectoryPath):
 		r2_demographics=unicode(myDF.iloc[21,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		age=u'ERROR'
 		gender=u'ERROR'
-		######################PARSE______AGES_____AND____GENDER__#######################################
 
 		s1_geographic_location=myDF.iloc[22,1]
 		s2_geographic_location=myDF.iloc[22,2]
@@ -276,7 +284,6 @@ for f in os.listdir(inputDirectoryPath):
 		r1_organ_system=unicode(myDF.iloc[27,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip().lower()
 		r2_organ_system=unicode(myDF.iloc[27,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip().lower()
 		OrganSystem=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-		######################__PARSE______Organ_____System__#######################################
 
 		s1_symptoms_and_signs=myDF.iloc[28,1]
 		s2_symptoms_and_signs=myDF.iloc[28,2]
@@ -354,7 +361,6 @@ for f in os.listdir(inputDirectoryPath):
 		s2_images_or_videos=myDF.iloc[37,2]
 		r1_images_or_videos=unicode(myDF.iloc[37,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_images_or_videos=unicode(myDF.iloc[37,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
-		######################__PARSE______Organ_____System__#######################################
 		images=u'ERROR'
 		graphs_or_illustrations=u'ERROR'
 		videos=u'ERROR'
@@ -365,14 +371,14 @@ for f in os.listdir(inputDirectoryPath):
 		r1_relationship_to_other_case_reports=unicode(myDF.iloc[38,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_relationship_to_other_case_reports=unicode(myDF.iloc[38,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		relationshipToOtherCRs=r1_relationship_to_other_case_reports
-		######################__PARSE
+		#You probably want to parse this field
 
 		s1_relationship_to_published_clinical_trials=myDF.iloc[39,1]
 		s2_relationship_to_published_clinical_trials=myDF.iloc[39,2]
 		r1_relationship_to_published_clinical_trials=unicode(myDF.iloc[39,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_relationship_to_published_clinical_trials=unicode(myDF.iloc[39,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		relationshipWithCT=r1_relationship_to_published_clinical_trials
-		######################__PARSE
+		#You probably want to parse this field
 
 		s1_crosslink_with_database=myDF.iloc[40,1]
 		s2_crosslink_with_database=myDF.iloc[40,2]
@@ -389,7 +395,7 @@ for f in os.listdir(inputDirectoryPath):
 		s2_funding_source=myDF.iloc[43,2]
 		r1_funding_source=unicode(myDF.iloc[43,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_funding_source=unicode(myDF.iloc[43,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
-		funding_source=r1_funding_source  ##################################
+		funding_source=r1_funding_source  #Not printed out in output file, but something that you may in the future want to include in the output file.
 		if r1_funding_source==u"nan":
 			funding_source=r2_funding_source
 
@@ -398,7 +404,7 @@ for f in os.listdir(inputDirectoryPath):
 		s2_award_number=myDF.iloc[44,2]
 		r1_award_number=unicode(myDF.iloc[44,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_award_number=unicode(myDF.iloc[44,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
-		award_number=r1_award_number##################################
+		award_number=r1_award_number #Not printed out in output file, but something that you may in the future want to include in the output file.
 		if r1_award_number==u"nan":
 			award_number=r2_award_number
 
@@ -407,10 +413,9 @@ for f in os.listdir(inputDirectoryPath):
 		s2_disclosures_conflict_of_interest=myDF.iloc[45,2]
 		r1_disclosures_conflict_of_interest=unicode(myDF.iloc[45,3]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
 		r2_disclosures_conflict_of_interest=unicode(myDF.iloc[45,4]).replace(u'\n',u' ').replace(u'\xa0',u' ').strip()
-		disclosures_conflict_of_interest=r1_disclosures_conflict_of_interest##################################
+		disclosures_conflict_of_interest=r1_disclosures_conflict_of_interest #Not printed out in output file, but something that you may in the future want to include in the output file.
 		if r1_disclosures_conflict_of_interest==u"nan":
 			disclosures_conflict_of_interest=r2_disclosures_conflict_of_interest
-
 
 		if len(myDF) > 46:
 			s1_references=myDF.iloc[46,1]
@@ -423,9 +428,10 @@ for f in os.listdir(inputDirectoryPath):
 			errors.append(e)
 			print(e+u": "+unicode(f))
 	
-		
+		#####################################################################################################################################################################
 		#Now that we have saved all the information into variables, we will parse some of the raw input values (like demographics, images/videos, etc.)
-		#########_MOVE_PARSING__JOURNAL#######################
+
+		#Journal and Impact Factor normalization
 		if journal in journal_dict:
 			journal=journal_dict[journal]
 			impact=impact_factors[journal]
@@ -433,33 +439,27 @@ for f in os.listdir(inputDirectoryPath):
 			impact=r3_impact
 			e=u'Error: '+journal+u' not listed in impact factor table and not in excel sheet'
 			errors.append(e)
-			#print(e)
 			not_present_journals.add(journal)
 			impact_error_num1=impact_error_num1+1
-			###########################FIX#########FIX#####################FIX#################FIX#################FIX
-#			bad_journals.write(journal+u'\n')
 		else:
 			impact=r3_impact
 			e=u'Warning: '+journal+u' not listed in impact factor table'
 			not_present_journals.add(journal)
 			impact_error_num2=impact_error_num2+1
-			###########################FIX#########FIX#####################FIX#################FIX#################FIX
-			#print(e)
-#			bad_journals.write(journal+u'\n')
 			errors.append(e)
 	
-		####_CHECK_PMID_##########
+		#Check that PMID listed in the file matches the PMID in the file name.
 		if PMID not in f:
 			print u'Error: PMID does not match file name.  PMID is '+PMID+u' and file name is '+f
 			errors.append(u'Error: PMID does not match file name. PMID is '+PMID+u' and file name is '+f)
 
-		#####_PARSE_AGE_########
-#####################################MAKE_IT_SO_IT_HANDLES_UNICODE
-		age_string=re.sub(ur'\< 18 yo','less than 18 years old',r1_demographics.lower())##
+		#Parse Age from demographic string. Hopefully I'm dealing with the unicode correctly
+		age_string=re.sub(ur'\< 18 yo','less than 18 years old',r1_demographics.lower())
+		#########CLEMENT: I've ran out of time but maybe if you have time you can use word to number sooner (see line 475), so that we can catch things like "age of one," which we are not catching right now. Just double check this doesn't mess anything up. Thanks! :)
 		years=re.findall(ur'(\d+(?:\.\d+)?)([^\w\d]+)(year|yr|yo|y\/o)',age_string)
-		more_years=re.findall(ur'(?:aged?|age of)[^\w\d]+(\d+(?:\.\d+)?)',age_string)#AGE OF ONE?
+		more_years=re.findall(ur'(?:aged?|age of)[^\w\d]+(\d+(?:\.\d+)?)',age_string)
 		writ_years=re.findall(ur'((?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|one hundred|one hundred and)(?:[^\w\d]+)(?:(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(?:[^\w\d]+))?)(year|yr|yo|y\/o)',age_string)
-		decades=re.findall(ur'twenties|thirties|forties|fifties|sixties|seventies|eighties|nineties|20s|30s|40s|50s|60s|70s|80s|90s|20\'s|30\'s|40\'s|50\'s|60\'s|70\'s|80\'s|90\'s',age_string)#20's-->and switch all bad ' to '
+		decades=re.findall(ur'twenties|thirties|forties|fifties|sixties|seventies|eighties|nineties|20s|30s|40s|50s|60s|70s|80s|90s|20\'s|30\'s|40\'s|50\'s|60\'s|70\'s|80\'s|90\'s',age_string)#####ALSO, Right now we are not handling stuff like 20's with an apostrophe.  And note, to fix this you will have to switch all apostrophes to the normal apostrophe. There's a different kind of apostrophe that's slanted different (my computer actually often  autocorrects into this fancy apostrophe) and its not considered equal to the normal kind.
 		months=re.findall(ur'(\d+(?:\.\d+)?)([^\w\d]+)(month)',age_string)
 		days=re.findall(ur'(\d+(?:\.\d+)?)([^\w\d]+)(day)',age_string)
 		weeks=re.findall(ur'(\d+(?:\.\d+)?)([^\w\d]+)(week|wk)(?! premature)',age_string)
@@ -489,7 +489,7 @@ for f in os.listdir(inputDirectoryPath):
 			age=1/12.0
 		else:
 			age=u'NA'
-		age=unicode(age) ##
+		age=unicode(age)
 		age_string=re.sub(ur'(?<!(?:wo|hu))man|(?<!wo)men|boy','male',age_string)
 		age_string=re.sub(ur'woman|women|girl|lady|femal|sister','female',age_string)
 		gender_string=str(r2_demographics.lower()) ##
@@ -498,17 +498,19 @@ for f in os.listdir(inputDirectoryPath):
 		genders=set(re.findall(ur'female|male',age_string,re.I))
 		g2=set(re.findall(ur'female|male',gender_string,re.I))
 
-		#####_PARSE_GENDER_########
+		#Parse Gender from demographic string
 		if len(genders)==1:
 			gender=unicode(genders.pop().lower())
 		elif len(genders)==2:
 			if len(g2)==1:
 				gender=unicode(g2.pop().lower())
-				e=u'Warning: gender may be wrong in file'
+				e=u'Warning: Both male and female reported as gender. There should only be one gender, because we should be using only the first case report. MeSH terms columns has one gender, so using that one, but this could be wrong.'
 				errors.append(e)
-				print(e+u" "+f)
 			else:
 				gender=u'male & female'
+				e=u'Warning: Both male and female reported as gender. There should only be one gender, because we should be using only the first case report. '
+				#print(e+" "+f)
+				errors.append(e)
 		elif len(genders)==0:
 			if len(g2)==0:
 				gender=u"NA"
@@ -516,6 +518,8 @@ for f in os.listdir(inputDirectoryPath):
 				gender=unicode(g2.pop().lower())
 			elif len(g2)==2:
 				gender=u'male & female'
+				e=u'Warning: Both male and female reported as gender. There should only be one gender, because we should be using only the first case report. '
+				errors.append(e)
 			else:
 				print(g2)
 				g_str=u""
@@ -529,55 +533,54 @@ for f in os.listdir(inputDirectoryPath):
 			errors.append(e)
 			print(e+u" in file "+f)
 
-		#####_PARSE_DISEASE_SYSTEM_########
+		#Parse Disease system
 		if r1_organ_system==u"nan":
 			OrganSystem=[u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA',u'NA']
 			e=u"Error: no disease system listed"
 			errors.append(e)
 			#print(e+u" in file "+f)
 		else:
-			bad=[] ############################make it handle unicode
-			text=re.split(',|;',str(r1_organ_system.lower())) ###
-			#print text
+			bad=[] #not sure if this section handles unicode 100% correct
+			text=re.split(',|;',r1_organ_system.lower())
 			error=u""
 			if len(text)<=0:
 				OrganSystem=['ERROR','ERROR','ERROR','ERROR','ERROR','ERROR','ERROR','ERROR','ERROR','ERROR','ERROR','ERROR','ERROR','ERROR','ERROR']##
 			for s in text:
-				s.strip() #is not getting rid of all whitespace. Had to change s==cancer to cancer in s
+				s.strip() #is not getting rid of all whitespace? Had to change s==cancer to cancer in s
 				if len(s)==0:
 					s="nan"
 				elif 'cancer' in s:
-					OrganSystem[0]=1#systems.append('Cancer')
+					OrganSystem[0]=1 #Cancer
 				elif 'nervous' in s or 'neurologic' in s or 'neruological' in s:
-					OrganSystem[1]=1#systems.append('Nervous System Diseases')
+					OrganSystem[1]=1 #Nervous System Diseases
 				elif 'cardio' in s:
-					OrganSystem[2]=1#systems.append('Cardiovascular Diseases')
+					OrganSystem[2]=1 #Cardiovascular Diseases
 				elif 'musculoskeletal' in s or 'rheumatologic' in s:
-					OrganSystem[3]=1#systems.append('Musculoskeletal Diseases and Rheumatological Diseases')
+					OrganSystem[3]=1 #Musculoskeletal Diseases and Rheumatological Diseases
 				elif s=='gi' or 'digestive' in s or 'gastrointestinal' in s:
-					OrganSystem[4]=1#systems.append('Digestive System Diseases')
+					OrganSystem[4]=1 #Digestive System Diseases
 				elif 'obstetrical' in s or 'gynecological' in s:
-					OrganSystem[5]=1#systems.append('Obstetrical and Gynecological Diseases')
+					OrganSystem[5]=1 #Obstetrical and Gynecological Diseases
 				elif 'infectious' in s:
-					OrganSystem[6]=1#systems.append('Infectious Diseases')
+					OrganSystem[6]=1 #Infectious Diseases
 				elif 'respiratory' in s:
-					OrganSystem[7]=1#systems.append('Respiratory Tract Diseases')
-				elif 'hematologic' in s or 'blood' in s: # or 'hemotological' in s:
-					OrganSystem[8]=1#systems.append('Hematologic Diseases')
+					OrganSystem[7]=1 #Respiratory Tract Diseases
+				elif 'hematologic' in s or 'blood' in s:
+					OrganSystem[8]=1 #Hematologic Diseases
 				elif 'kidney' in s or 'urologic' in s or 'urinary' in s or 'nephrologic' in s:
-					OrganSystem[9]=1#systems.append('Kidney Diseases and Urologic Diseases')
+					OrganSystem[9]=1 #Kidney Diseases and Urologic Diseases
 				elif 'endocrin' in s or 'endorine' in s:
-					OrganSystem[10]=1#systems.append('Endocrine System Diseases')
+					OrganSystem[10]=1 #Endocrine System Diseases
 				elif 'oral' in s or 'maxillofacial' in s:
-					OrganSystem[11]=1#systems.append('Oral and Maxillofacial Diseases')
+					OrganSystem[11]=1 #Oral and Maxillofacial Diseases
 				elif 'ophthalm' in s or 'eye' in s:
-					OrganSystem[12]=1#systems.append('Ophthalmological Diseases')
+					OrganSystem[12]=1 #Ophthalmological Diseases
 				elif 'otorhinolaryngologic' in s:
-					OrganSystem[13]=1#systems.append('Otorhinolaryngologic Diseases')
+					OrganSystem[13]=1 #Otorhinolaryngologic Diseases
 				elif 'skin' in s or 'dermotological' in s:
-					OrganSystem[14]=1#systems.append('Skin Diseases')
+					OrganSystem[14]=1 #Skin Diseases
 				else:
-					bad.append(unicode(s)) ###########i should make it all unicode. if unicode in bad then this ocnverting wont fix prob because messed up already trying to read as ascii. and redundant if same as ascii
+					bad.append(unicode(s)) #Converting to unicode here may be redundant
 			if len(bad)>0:
 				error=u'Warning: In file '+unicode(f)+u' Organ System has following invalid tokens: '
 				for i in bad:
@@ -585,10 +588,11 @@ for f in os.listdir(inputDirectoryPath):
 				error=error[:-1]
 			if len(error)>0:
 				errors.append(error)
-#				print error
-		#######_PARSE_CROSSLINK_WITH_DATABASE########################
+				#print error
+
+		#Parsing Crosslink with database section
 		if r2_crosslink_with_database!=u"nan":
-			nums=re.findall(ur'(?:^\d+ | \d+)', str(r2_crosslink_with_database)) #######handle unicode!!!!!
+			nums=re.findall(ur'(?:^\d+ | \d+)', str(r2_crosslink_with_database))
 			my_sum=0
 			if len(nums)>0:
 				for n in nums:
@@ -597,20 +601,19 @@ for f in os.listdir(inputDirectoryPath):
 			else:
 				urls=re.findall(ur'https:\S*', str(r2_crosslink_with_database))
 				if len(urls)>0:
-					crosslinkWithDatabase=unicode(len(urls))#+'*'
-					#print 'Warning: Crosslinks in file '+f+' in wrong format. Computing answer assuming only 1 per link'
+					crosslinkWithDatabase=unicode(len(urls))
 					errors.append(u"Warning: Crosslinks in wrong format, computing answer assuming only 1 crosslink per link")
 				else:
 					crosslinkWithDatabase=u"ERROR"
 					e=u"Error: Parsing error in crosslink with database row"
 					errors.append(e)
 					print(e+u" in file "+f)
-		#########_PARSE_Images_Or_Videos##############
+
+		#Parsing Images/Videos section
 		if r1_images_or_videos==u"nan":
-			#image_string=u"ERROR"
 			e=u"Error: Cannot parse Images or Videos because not listed"
 			errors.append(e)
-#			print(e+u" in file "+f)
+			#print(e+u" in file "+f)
 		else:
 			image_nums=re.findall(ur'\d+(?<! Figure)',r1_images_or_videos) ####handle unicode!
 			if len(image_nums)==4:
@@ -632,19 +635,19 @@ for f in os.listdir(inputDirectoryPath):
 				e=u"Error: IMAGE NUMBERS IN WRONG FORMAT"
 				errors.append(e)
 				print(e+u": "+r1_images_or_videos+u" (in file "+unicode(f)+u")")
-#				images=r1_images_or_videos
-#				graphs_or_illustrations=r1_images_or_videos
-#				videos=r1_images_or_videos
-#				tables=r1_images_or_videos
+				#images=r1_images_or_videos
+				#graphs_or_illustrations=r1_images_or_videos
+				#videos=r1_images_or_videos
+				#tables=r1_images_or_videos
 
 
-		#########_PARSE_REFERENCES_##############
+		#Parsing References
 		if r1_references!=u"nan":
-			ref_nums=re.findall(ur'\d+',r1_references) #####handle unicode
+			ref_nums=re.findall(ur'\d+',r1_references)
 			if len(ref_nums)>=1:
 				references=ref_nums[0]
 				if len(ref_nums)>1:
-					e=u'Warning: references cell has multiple numbers. Taking first one.'
+					e=u'Error: references in wrong format. References cell has multiple numbers. Taking first one, but this could be wrong.'
 					errors.append(e)
 					print(e+u" In file "+unicode(f))
 			elif len(ref_nums)==0:
@@ -652,30 +655,16 @@ for f in os.listdir(inputDirectoryPath):
 				e=u"Error: references in wrong format"
 				errors.append(e)
 				print(e+u": "+r1_references+u" (in file "+unicode(f)+")")
-
-
-#https://s3.amazonaws.com/assets.datacamp.com/blog_assets/PandasPythonForDataScience.pdf
-#https://stackoverflow.com/questions/23594878/pandas-dataframe-and-character-encoding-when-reading-excel-file
-#https://stackoverflow.com/questions/38228098/pandas-no-column-names-in-data-file
-#https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_excel.html
-#https://pandas.pydata.org/pandas-docs/stable/indexing.html
-#https://stackoverflow.com/questions/33216180/move-columns-within-pandas-data-frame
-#https://stackoverflow.com/questions/17977540/pandas-looking-up-the-list-of-sheets-in-an-excel-file
-#https://stackoverflow.com/questions/20490274/how-to-reset-index-in-a-pandas-data-frame
-#https://stackoverflow.com/questions/393843/python-and-regular-expression-with-unicode
-
-
-#						s1_TOTAL_TEXT=re.findall(r'\d+',str(line[1]).strip())  ##????????????????????????????????????????
-#						s2_TOTAL_TEXT=re.findall(r'\d+',str(line[1]).strip())	##???????????????????????????????????????
-#						num=re.findall(r'\d+',line[3].strip())   ##????????????????????????????????????????pmid
-#						num=re.findall(r'\d+',line[4].strip())   ##????????????????????????????????????????pmid
-
+		#####################################################################################################################################################################
+		#Concat all errors into an error string
 		error_string=u""
 		for e in errors:
 			if error_string==u"":
 				error_string=error_string+e
 			else:
 				error_string=error_string+u'; '+e
+
+		#Write output for current CCR to output files
 		my_string=unicode(CR_Number)+u'\t'+unicode(PMID)+u'\t'+unicode(citations)+u'\t'+unicode(title)+u'\t'+unicode(year)+u'\t'+journal+u'\t'+unicode(impact)+u'\t'+unicode(MedContextScore)+u'\t'+unicode(MedMeshScore)+u'\t'+keyWords+u'\t'
 		my_string=my_string+age
 		my_string=my_string+u'\t'+gender+u'\t'
@@ -692,7 +681,7 @@ for f in os.listdir(inputDirectoryPath):
 		raw_CIC_file.write(unicode(CR_Number)+u'\t'+r1_title+u'\t'+r1_authors+u'\t'+r1_year+u'\t'+r1_journal+u'\t'+r1_institution+u'\t'+r1_senior_author+u'\t'+r1_pmid+u'\t'+r1_doi+u'\t'+r1_link+u'\t'+r1_languages+u'\t'+r1_key_words+u'\t'+r1_demographics+u'\t'+r1_geographic_location+u'\t'+r1_life_style+u'\t'+r1_family_history+u'\t'+r1_social_background+u'\t'+r1_medical_surgical_history+u'\t'+r1_organ_system+u'\t'+r1_symptoms_and_signs+u'\t'+r1_comorbidities+u'\t'+r1_diagnostic_procedure+u'\t'+r1_disease_diagnosis+u'\t'+r1_laboratory_values+u'\t'+r1_pathology+u'\t'+r1_pharmacological_therapy+u'\t'+r1_therapeutic_intervention+u'\t'+r1_outcome+u'\t'+r1_images_or_videos+u'\t'+r1_relationship_to_other_case_reports+u'\t'+r1_relationship_to_published_clinical_trials+u'\t'+r1_crosslink_with_database+u'\t'+r1_funding_source+u'\t'+r1_award_number+u'\t'+r1_disclosures_conflict_of_interest+u'\t'+r1_references)
 		raw_PMED_file.write(unicode(CR_Number)+u'\t'+r2_title+u'\t'+r2_authors+u'\t'+r2_year+u'\t'+r2_journal+u'\t'+r2_institution+u'\t'+r2_senior_author+u'\t'+r2_pmid+u'\t'+r2_doi+u'\t'+r2_link+u'\t'+r2_languages+u'\t'+r2_key_words+u'\t'+r2_demographics+u'\t'+r2_geographic_location+u'\t'+r2_life_style+u'\t'+r2_family_history+u'\t'+r2_social_background+u'\t'+r2_medical_surgical_history+u'\t'+r2_organ_system+u'\t'+r2_symptoms_and_signs+u'\t'+r2_comorbidities+u'\t'+r2_diagnostic_procedure+u'\t'+r2_disease_diagnosis+u'\t'+r2_laboratory_values+u'\t'+r2_pathology+u'\t'+r2_pharmacological_therapy+u'\t'+r2_therapeutic_intervention+u'\t'+r2_outcome+u'\t'+r2_images_or_videos+u'\t'+r2_relationship_to_other_case_reports+u'\t'+r2_relationship_to_published_clinical_trials+u'\t'+r2_crosslink_with_database+u'\t'+r2_funding_source+u'\t'+r2_award_number+u'\t'+r2_disclosures_conflict_of_interest+u'\t'+r2_references)
 
-#Write all of the journals we do not have an impact factor for in a file
+#Record all of the journals we do not have an impact factor for in a file
 e1=u"Error: "+unicode(impact_error_num1)+u" files did not have an impact factor listed and the impact factor can't be inferred from the journal name."
 e2=u"Warning: "+unicode(impact_error_num2)+u" files had impact factors listed, but the updated impact factor can't be inferred from the journal name, so the impact factor in the output file may be wrong."
 e3=u"Total unrecognized journal names: "+unicode(len(not_present_journals))
@@ -706,7 +695,7 @@ print(u"\n------Missing and Duplicate Case Report Numbers------")
 for b in not_present_journals:
 	bad_journals.write(b+u'\n')
 
-#Calculate which CCR numbers are duplicated, and which are missing NOTE: CHange the CCR number range in for loop below to match the total number of CCRs that should be present.
+#Calculate which CCR numbers are duplicated, and which are missing NOTE: Change the CCR number range in for loop below to match the total number of CCRs that should be present.
 missing=set()
 for n in range(1,1801):
 	if str(n) not in CRnumsPresent:
@@ -728,7 +717,10 @@ raw_CIC_file.close()
 raw_PMED_file.close()
 
 
-#LINKS of a few of the many websites and Stack Overflow posts that helped me:
+#Links of some helpful Stack Overflow posts, etc.:
+#https://stackoverflow.com/questions/13148429/how-to-change-the-order-of-dataframe-columns
+#https://stackoverflow.com/questions/33147158/pandas-check-if-all-values-are-nan-in-series
+
 #https://pypi.python.org/pypi/word2number/1.1
 #https://stackoverflow.com/questions/41211619/how-to-convert-xlsx-to-tab-delimited-files
 #https://stackoverflow.com/questions/27423199/python-xlrd-read-from-last-sheet-in-a-workbook
@@ -738,3 +730,13 @@ raw_PMED_file.close()
 #https://stackoverflow.com/questions/3437059/does-python-have-a-string-contains-substring-method
 #https://stackoverflow.com/questions/7907928/openpyxl-check-for-empty-cell
 #https://stackoverflow.com/questions/10393157/splitting-a-string-with-multiple-delimiters-in-python
+
+#https://s3.amazonaws.com/assets.datacamp.com/blog_assets/PandasPythonForDataScience.pdf
+#https://stackoverflow.com/questions/23594878/pandas-dataframe-and-character-encoding-when-reading-excel-file
+#https://stackoverflow.com/questions/38228098/pandas-no-column-names-in-data-file
+#https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_excel.html
+#https://pandas.pydata.org/pandas-docs/stable/indexing.html
+#https://stackoverflow.com/questions/33216180/move-columns-within-pandas-data-frame
+#https://stackoverflow.com/questions/17977540/pandas-looking-up-the-list-of-sheets-in-an-excel-file
+#https://stackoverflow.com/questions/20490274/how-to-reset-index-in-a-pandas-data-frame
+#https://stackoverflow.com/questions/393843/python-and-regular-expression-with-unicode
