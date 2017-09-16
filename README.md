@@ -104,28 +104,43 @@ The terminal output has three parts
 
 ## Parsing And Quality Control Explanations
 Here I will explain how we parsed and double checked some of the information.
+
 #### Standardization of Journal Name and Impact Factor
-(coming soon)
+We tried to standardize the journal names so that we could obtain an updated impact factor value.  We were mostly successful, although there are still some journal names that the script cannot currently recognize (see JOURNALS_MISSING_IMPACT_FACTOR output file). We utilized information from the NLM catalog, as well as some basic string substitution, to find various journal name variations.  We tried to eliminate ambiguous journal names.  This can present a bit of a challenge since some journal names are very similar and may be refered to by a version of the name that may match a name a different journal is refered as.
+
 #### Checking in file PMID with PMID in File Name
-(coming soon)
-#### Parsing Age and Gender from "Demographics" Text
-(coming soon)
+We checked whether the PMID listed within the metadata file matched the PMID listed in the file name (they should match).
+
+#### Parsing Age from "Demographics" Text
+We used regular expressions and string substitution to extract the patient ages. Because the demographic information may contain more than one number, and because a number is not necesarily going to refer to the age of the patient, we had to look at surrounding phrases like "years old" and "months old" to help us unravel what the listed age is.  This section is not 100% accurate--there are still some situations where the age is written weird or a birth year is given and we cannot extract a proper age.
+
+If a baby was several months old we expressed this in the form of a decimal.  We made 1 month the minimum age, so even if an infant is listed as being 2 days old we put it down as being one month old, because in comparison to the total population in the dataset, its irrelevant how many days old an infant is, we mainly just care that it is an infant. Similarly, if "infant" or "newborn" or "neonate" was given instead of an actual age, the age was listed as one month.
+
+Another generalization we made--if someone was in their 30's, their age was given as 35, if they were listed in their 80's their age was given as 85, and so forth.  We kept with this even if it said "late thirties" or "low thirties."  Like with the generalizations we made with infants, this was in an effort to make analysis of the data easier.  We wanted each patient to have a numerical age, not a word describing their age, so we sacrificed a small amount of accuracy in order to facilitate data analysis.
+
+#### Parsing Gender from "Demographics" Text
+Again, we used regular expressions and string substitition to extract patient genders.  For example, we took our demographics strings and words like woman, sister, etc. we changed to female and words like man, boy, etc. we changed to male. This way we could search for male and female in the string. We tried to mostly focus on case reports with one patient, and when there was more than one patient for the most part we tried to take demographic information from the first patient.  There are some times though when the gender had to be recorded here as "male and female" because two gender words were listed.  There are also times when the gender listed in the "Contained in Context" collumn differes from the gender in the "Indexed by MeSH" column.  When avaialable we mostly relied on what was recorded in the "Contained in Context" column, when gender information was recorded in both columns. One exception is when one gender was recorded in the "Indexed by MeSH" column, and when two genders were recorded in the "Contained in Context" collumn, we extracted the gender from the "Indexed by MeSH" column.
+
+
 #### Parsing "Disease System" Text into Binary Values Representing Each of 15 Disease Systems
-(coming soon)
+Splitting the disease system content at commas and semicolons and using string and substring matching allowed us to detect which of our 15 disease systems was present and give a corresponding binary value.  There are some files with words or phrases like "tamautic diseases" that are not one of our selected disease systems and not recognized by our script. 
+
 #### Parsing Number of Database Crosslinks from "Crosslink with Database" Text
-(coming soon)
+Here we extracted the number of database crosslinks.  We also pasted some of the links in, so we had to use regular expressions to help extract this. If the number of links was not given, the number of urls was counted. There is at least one instance of a reported error where neither of these formats were present in the text field.
+
 #### Parsing the Number of Images, Illustrations, Videos, and Tables from "Diagnostic Imaging/Videotape Recording" Text
-(coming soon)
+In the ideal situation there are 4 numbers seperated by semicolons representing the number of images, the number of illustrations or graphs, the number of videos, and the number of tables associated with each publication. We modified our method partway though though, so some of the metadata files only had two numbers, one for images, graphs, or illustrations, and one for videos.  In this case, the first number was assigned to images and the second to video, and the others were assigned as "ERROR."  If only one number was assigned it was given to images, and videos was assumed to be 0, because most of the time there were no videos and so at first sometimes one number was put down if there were no videos. 
+
 #### Parsing the Number of References
-(coming soon)
+The number of referenes was extracted using a regular expression. While most extractors simply put the number of refernces in this field, but some extractors put other information there, like the first reference. In this case the first number in the string was taken, and a warning was generated, saying that this number may be incorrect.
 
 ## Future Work
 There are several improvements that can be made to this part of the project.
 * There are still some journal names that we don't have impact factors for. I am not sure what percentage of those is due to those journals not having impact factors, and what percentage is because we are missing name variations.  It would be good for someone to look into this and do some optimizations to make sure all journals that have impact factors are covered.  Edit the prep_journals.py file to do this, and then rerun the file to get updated dictionary files.
-* Clement came up with a good way to condense some of the code into fewer lines.  He is planning on working on that.
+* Clement came up with a good way to condense some of the code into fewer lines.  He is planning on working on that. *(Also Clement, I left a couple comments for you in the section of the code that parses the age and gender. I realized a couple things we could do to facilitate the recognition of more ages, but I didn't have time to implement it.)*
 * There are still some formatting inconcsistencies and errors in the datafiles. See "errors" column in main output file. Throughout my code I generate various error and warning messages and then concatenate these into the error column at the end of the file. It would be very good for someone to go through those warnings and errors and try to account for them.
 * As has been discussed previously, there will probably be normalizations and such to do on the data to help make up for some of the inconsistencies in data extraction methods.
-* It would also be good for someone to look at the AGES files and make sure there are no weirdly formatted genders/ages we are parsing wrong.  You could also do more general error checking to make sure we are returning everything right. 
+* It would also be good for someone to look at the AGES files and make sure there are no weirdly formatted genders/ages we are parsing wrong.  You could also do more general error checking to make sure we are returning everything right. Most of the time when we add a bunch more metadata files (like we just did when running the 1800--although this actually isn't quite up to 1800 yet) new inconsistencies or problems pop up. I didn't have time to examine the output much though.
 
 ## Sources
 1. NLM Catalog [Internet]. Bethesda MD: National Library of Medicine (US). [date unknown] - . Results from searching currentlyindexed[All] and downloading in XML format; [cited 2017 Sep 14]. Available from: https://www.ncbi.nlm.nih.gov/nlmcatalog?Db=journals&Cmd=DetailsSearch&Term=currentlyindexed%5BAll%5D.
